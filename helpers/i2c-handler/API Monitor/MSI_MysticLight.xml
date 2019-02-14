@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<ApiMonitor>
+    <Include Filename="Headers\windows.h.xml" />
+	<Module Name="CPU_Engine.dll" CallingConvention="STDCALL"/>
+	<Module Name="Driver_Engine.dll" CallingConvention="STDCALL"/>
+	<Module Name="LEDControl.dll" CallingConvention="STDCALL">
+		<Api Name="Dlmc"/>
+		<Api Name="GetLEDSetting"/>
+		<Api Name="GetSSDInfo"/>
+		<Api Name="LED_BreathFrame"/>
+		<Api Name="LED_Breathe"/>
+		<Api Name="LED_ChangeColor"/>
+		<Api Name="LED_Close"/>
+		<Api Name="LED_ColorChangeFrame"/>
+		<Api Name="LED_ColorCycleFrame"/>
+		<Api Name="LED_Flicker"/>
+		<Api Name="LED_GetApacerSSD"/>
+		<Api Name="LED_LEDCtrl"/>
+		<Api Name="LED_StrobeFrame"/>
+	</Module>
+	<Module Name="MBAPI_x86.dll" CallingConvention="STDCALL">
+		<Api Name="AuraBreathing"/>
+		<Api Name="AuraFlashing"/>
+		<Api Name="AuraNoanimation"/>
+		<Api Name="CheckBTLED"/>
+		<Api Name="CheckECRAM"/>
+		<Api Name="CheckLANLED"/>
+		<Api Name="CheckMBVersion">
+			<Param Type="PWCHAR" Name="csMB" />
+			<Param Type="PWCHAR" Name="csMBVer" />
+			<Param Type="PWCHAR" Name="csMBMarket" />
+			<Param Type="PWCHAR" Name="csMBSIOInit" />
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="CheckRenesasVersion"/>
+		<Api Name="CloseLEDControl"/>
+		<Api Name="ControlBTLED"/>
+		<Api Name="ControlCorsairDRAMLED"/>
+		<Api Name="ControlCorsairProDRAMLED">
+			<Param Type="int" Name="style" />
+			<Param Type="int" Name="colorType" />
+			<Param Type="int" Name="direction" />
+			<Param Type="int" Name="r" />
+			<Param Type="int" Name="g" />
+			<Param Type="int" Name="b" />
+			<Param Type="int" Name="bright" />
+			<Param Type="int" Name="speed" />
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="ControlFANLED"/>
+		<Api Name="ControlKingStonDRAMLED"/>
+		<Api Name="ControlLANLED"/>
+		<Api Name="CorsairProDRAMSync"/>
+		<Api Name="GSKDDR_Change"/>
+		<Api Name="GSKDDR_Initial"/>
+		<Api Name="GSKDDR_MeteorStop"/>
+		<Api Name="GSKDDR_ONOFF"/>
+		<Api Name="GSKDDR_RainbowStop"/>
+		<Api Name="GetCPUTemp"/>
+		<Api Name="GetCPU_GameBoostSec"/>
+		<Api Name="GetCPU_MaxRatio"/>
+		<Api Name="GetDRAMInfo"/>
+		<Api Name="GetDRAMInfo2"/>
+		<Api Name="GetECSpace"/>
+		<Api Name="GetSIO_DefaultWhite"/>
+		<Api Name="GetSMBBASE"/>
+		<Api Name="InitialDDRTIMING">
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="KeepRenesasLED"/>
+		<Api Name="LEDAllControlV2"/>
+		<Api Name="LEDAllControlV2_1"/>
+		<Api Name="LEDAudioControl"/>
+		<Api Name="LEDBOTControl"/>
+		<Api Name="LEDControl"/>
+		<Api Name="LEDMonoControlV2"/>
+		<Api Name="LEDMysticControl"/>
+		<Api Name="LEDMysticControlV2"/>
+		<Api Name="LEDMysticControlV2_1"/>
+		<Api Name="ReleaseDll"/>
+		<Api Name="ResetLED"/>
+		<Api Name="SaveFANLED"/>
+		<Api Name="SetAllBreathingModeV2"/>
+		<Api Name="SetAllDualBlinkingModeV2"/>
+		<Api Name="SetAllFlashingModeV2"/>
+		<Api Name="SetAudioBreathingMode"/>
+		<Api Name="SetAudioDualBlinkingMode"/>
+		<Api Name="SetAudioFlashingMode"/>
+		<Api Name="SetBIOS_Breathing"/>
+		<Api Name="SetBIOS_Off"/>
+		<Api Name="SetBIOS_On"/>
+		<Api Name="SetBreathingMode"/>
+		<Api Name="SetCPUTempColor"/>
+		<Api Name="SetColorMode"/>
+		<Api Name="SetCorsairDRAMLED"/>
+		<Api Name="SetDualBlinkingMode"/>
+		<Api Name="SetECRAM_Color"/>
+		<Api Name="SetECRAM_Mode"/>
+		<Api Name="SetECSpace"/>
+		<Api Name="SetExtendSequence"/>
+		<Api Name="SetFlashingMode"/>
+		<Api Name="SetLEDModelName"/>
+		<Api Name="SetMonoBreathingModeV2"/>
+		<Api Name="SetMonoDualBlinkingModeV2"/>
+		<Api Name="SetMonoFlashingModeV2"/>
+		<Api Name="SetMusicLED"/>
+		<Api Name="SetMusicLEDV2"/>
+		<Api Name="SetMusicVolumeV2"/>
+		<Api Name="SetMysticBreathingMode"/>
+		<Api Name="SetMysticBreathingModeV2"/>
+		<Api Name="SetMysticBreathingModeV2_1"/>
+		<Api Name="SetMysticDualBlinkingMode"/>
+		<Api Name="SetMysticDualBlinkingModeV2"/>
+		<Api Name="SetMysticDualBlinkingModeV2_1"/>
+		<Api Name="SetMysticFlashingMode"/>
+		<Api Name="SetMysticFlashingModeV2"/>
+		<Api Name="SetMysticFlashingModeV2_1"/>
+		<Api Name="SetMysticLEDColor"/>
+		<Api Name="SetMysticLEDColorV2"/>
+		<Api Name="SetMysticLEDColorV2_1"/>
+		<Api Name="SetMysticLightningMode"/>
+		<Api Name="SetMysticLightningModeV2"/>
+		<Api Name="SetMysticLightningModeV2_1"/>
+		<Api Name="SetMysticMarqueeMode"/>
+		<Api Name="SetMysticMarqueeModeV2"/>
+		<Api Name="SetMysticMeteorMode"/>
+		<Api Name="SetMysticMeteorModeV2"/>
+		<Api Name="SetMysticRainbowMode"/>
+		<Api Name="SetMysticRainbowModeV2"/>
+		<Api Name="SetMysticSequenceMode"/>
+		<Api Name="SetMysticStackV2"/>
+		<Api Name="SupportLED"/>
+		<Api Name="_ControlGALAXDRAMLED@16"/>
+		<Api Name="_ControlGALAXDRAMLED_Byte@16"/>
+		<Api Name="_ControlKingStonDRAMLED_X299@8"/>
+		<Api Name="_ControlMICRONDRAMLED@16"/>
+		<Api Name="_DefaultLEDControl@0"/>
+		<Api Name="_EUDARLEDControl@20"/>
+		<Api Name="_EUDARLED_Initial@0"/>
+		<Api Name="_GSKDDR_MarqueeStop@0"/>
+		<Api Name="_IT8295QFN_OP@20"/>
+		<Api Name="_RenesasLEDControlV3@64">
+			<Param Type="INT" Name="index70" />
+			<Param Type="INT" Name="index71" />
+			<Param Type="INT" Name="index80" />
+			<Param Type="INT" Name="index81" />
+			<Param Type="INT" Name="index82" />
+			<Param Type="INT" Name="index83" />
+			<Param Type="INT" Name="cmd" />
+			<Param Type="INT" Name="data" />
+			<Param Type="INT" Name="r" />
+			<Param Type="INT" Name="g" />
+			<Param Type="INT" Name="b" />
+			<Param Type="INT" Name="e0" />
+			<Param Type="INT" Name="e1" />
+			<Param Type="INT" Name="e2" />
+			<Param Type="INT" Name="e3" />
+			<Param Type="INT" Name="e5" />
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="_RenesasLEDSetBank@4"/>
+		<Api Name="_SMBusControl@12"/>
+		<Api Name="_SMBusControlBlock@16"/>
+		<Api Name="_SMBusControlWord@12"/>
+		<Api Name="_SetRainbowBreathingMode@0"/>
+		<Api Name="_SetRainbowFlashingMode@0"/>
+		<Api Name="_SetRainbowMode@0"/>
+	</Module>
+	<Module Name="SMBus_Engine.dll" CallingConvention="STDCALL">
+		<Api Name="SMB_BlockRead">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="INT64" />
+		</Api>
+		<Api Name="SMB_BlockRead1">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="INT64" />
+		</Api>
+		<Api Name="SMB_BlockRead2">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="INT64" />
+		</Api>
+		<Api Name="SMB_BlockRead3">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="INT64" />
+		</Api>
+		<Api Name="SMB_BlockWrite1">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="INT64" />
+		</Api>
+		<Api Name="SMB_BlockWrite2">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="INT64" />
+		</Api>
+		<Api Name="SMB_BlockWrite3">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="INT64" />
+		</Api>
+		<Api Name="SMB_ByteRead">
+			<Param Type="BYTE" Name="dev" />
+			<Param Type="BYTE" Name="addr" />
+			<Param Type="DWORD" Name="mode" />
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="SMB_ByteWrite">
+			<Param Type="BYTE" Name="dev" />
+			<Param Type="BYTE" Name="addr" />
+			<Param Type="BYTE" Name="data" />
+			<Param Type="DWORD" Name="mode" />
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="SMBusGetAddress">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="LPVOID" />
+		</Api>
+		<Api Name="SMBusInitialization">
+			<Param Type="INT" Name="a" />
+			<Param Type="INT" Name="b" />
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="SMBusRelease">
+			<Return Type="VOID" />
+		</Api>
+		<Api Name="SMBusReload">
+			<Return Type="BOOL" />
+		</Api>
+	</Module>
+</ApiMonitor>
