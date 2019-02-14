@@ -173,7 +173,7 @@ done
 write_bright $BRIGHT
 
 if [[ $STYLE -eq 16 ]]; then
-  write_leds $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA
+  write_leds "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA"
 fi
 
-write_config $STYLE $SPEED $COLORTYPE $DIRECTION $(get_colors $COLORA $COLORB)
+write_config $STYLE $SPEED $COLORTYPE $DIRECTION $(get_colors "$COLORA" "$COLORB")

@@ -46,12 +46,12 @@ get_color() {
     return 1
   fi
 
-  echo $color
+  echo "$color"
 }
 
 get_colors() {
   for color; do
-    get_color "$color"
+    get_color $color
   done
 }
 
