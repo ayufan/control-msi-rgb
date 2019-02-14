@@ -31,7 +31,7 @@ mode:
   off, rainbow, spiral-rainbow, wave
   visor, rain, rain-2,
   breathing, shift, marquee,
-  pulse
+  pulse, static
 
 color:
   color=<name-of-color>: main color (default random)
@@ -46,7 +46,7 @@ EOF
 for arg; do
   case "$arg" in
     dimm*)
-      set_dimm "$1"
+      set_dimm "$arg"
       ;;
 
     bright=[0-9]*)
@@ -131,6 +131,11 @@ for arg; do
       COLORB=black
       ;;
 
+    static)
+      STYLE=16
+      COLORTYPE=1
+      ;;
+
     help)
       usage
       exit 1
@@ -166,4 +171,9 @@ done
 # - 2 - high
 
 write_bright $BRIGHT
+
+if [[ $STYLE -eq 16 ]]; then
+  write_leds $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA $COLORA
+fi
+
 write_config $STYLE $SPEED $COLORTYPE $DIRECTION $(get_colors $COLORA $COLORB)
