@@ -5,48 +5,48 @@ shopt -s nullglob
 
 [[ -n "$TRACE" ]] && set -x
 
-COLOR_WHITE="255 255 255 $ALPHA"
-COLOR_RED="255 0 0 $ALPHA"
-COLOR_GREEN="0 255 0 $ALPHA"
-COLOR_BLUE="0 0 255 $ALPHA"
-COLOR_GRAY="128 128 128 $ALPHA"
-COLOR_BLACK="0 0 0 $ALPHA"
+COLOR_WHITE="0xff 0xff 0xff $ALPHA"
+COLOR_RED="0xff 0x0 0x0 $ALPHA"
+COLOR_GREEN="0x00 0xff 0x00 $ALPHA"
+COLOR_GREEN2="0x2e 0xcc 0x40 $ALPHA"
+COLOR_BLUE="0x00 0x00 0xff $ALPHA"
+COLOR_BLUE2="0x00 0x7d 0xd9 $ALPHA"
+COLOR_GRAY="0xaa 0xaa 0xaa $ALPHA"
+COLOR_SILVER="0xdd 0xdd 0xdd $ALPHA"
+COLOR_BLACK="0x00 0x00 0x00 $ALPHA"
+COLOR_NAVY="0x00 0x1f 0x3f $ALPHA"
+COLOR_AQUA="0x7f 0xdb 0xff $ALPHA"
+COLOR_TEAL="0x39 0xcc 0xcc $ALPHA"
+COLOR_OLIVE="0x3d 0x99 0x70 $ALPHA"
+COLOR_LIME="0x01 0xff 0x70 $ALPHA"
+COLOR_YELLOW="0xFF 0xdc 0x00 $ALPHA"
+COLOR_ORANGE="0xFF 0x85 0x36 $ALPHA"
+COLOR_MAROON="0x85 0x14 0x4b $ALPHA"
+COLOR_FUCHSIA="0xf0 0x12 0xbe $ALPHA"
+COLOR_PURPLE="0xb1 0x0d 0xc9 $ALPHA"
 
 fail() {
   echo "$@" 1>&2
   return 1
 }
 
+get_available_colors() {
+  while read key; do
+    key=${key/COLOR_/}
+    echo ${key,,}
+  done < <(compgen -v | grep ^COLOR_)
+}
+
 get_color() {
-  case "$1" in
-    white)
-      echo "$COLOR_WHITE"
-      ;;
+  key=COLOR_${1^^}
+  color=${!key}
 
-    red)
-      echo "$COLOR_RED"
-      ;;
+  if [[ -z "$color" ]]; then
+    fail "uknown color: $1 (supported color names: $(echo -n $(get_available_colors)))"
+    return 1
+  fi
 
-    green)
-      echo "$COLOR_GREEN"
-      ;;
-
-    blue)
-      echo "$COLOR_BLUE"
-      ;;
-
-    gray)
-      echo "$COLOR_GRAY"
-      ;;
-
-    black)
-      echo "$COLOR_BLACK"
-      ;;
-
-    *)
-      fail "uknown color: $1"
-      ;;
-  esac
+  echo $color
 }
 
 get_colors() {

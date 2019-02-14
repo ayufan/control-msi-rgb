@@ -9,9 +9,9 @@ STYLE=0
 BRIGHT=100
 DIRECTION=0
 SPEED=0
-COLOR_TYPE=0
-COLOR_A="white"
-COLOR_B="black"
+COLORTYPE=0
+COLORA="white"
+COLORB="black"
 
 usage() {
   cat <<EOF
@@ -74,13 +74,13 @@ for arg; do
       ;;
 
     color=*)
-      COLOR_TYPE=1
-      COLOR_A="${arg/color=/}"
+      COLORTYPE=1
+      COLORA="${arg/color=/}"
       ;;
 
     colorb=*)
-      COLOR_TYPE=1
-      COLOR_B="${arg/colorb=/}"
+      COLORTYPE=1
+      COLORB="${arg/colorb=/}"
       ;;
 
     wave)
@@ -158,4 +158,4 @@ done
 # - 2 - high
 
 write_bright $BRIGHT
-write_config $STYLE $SPEED $COLOR_TYPE $DIRECTION $(get_colors $COLOR_A $COLOR_B)
+write_config $STYLE $SPEED $COLORTYPE $DIRECTION $(get_colors $COLORA $COLORB)
