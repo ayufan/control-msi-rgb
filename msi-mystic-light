@@ -89,7 +89,7 @@ for arg; do
       STYLE=0x93
       ;;
 
-    nmystick)
+    mystick)
       STYLE=0x94
       ;;
 
@@ -121,6 +121,10 @@ for arg; do
 
     ontime=[0-9]*)
       ONTIME=${arg/ontime=/}
+      ;;
+
+    offtime=[0-9]*)
+      OFFTIME=${arg/offtime=/}
       ;;
 
     darktime=[0-9]*)
