@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+	<!--
+	API Monitor Filter
+	(c) 2010-2013, Rohitab Batra <rohitab@rohitab.com>
+	http://www.rohitab.com/apimonitor/
+	-->
 <ApiMonitor>
     <Include Filename="Headers\windows.h.xml" />
 	<Module Name="CPU_Engine.dll" CallingConvention="STDCALL"/>
@@ -59,8 +64,19 @@
 		<Api Name="GetCPUTemp"/>
 		<Api Name="GetCPU_GameBoostSec"/>
 		<Api Name="GetCPU_MaxRatio"/>
-		<Api Name="GetDRAMInfo"/>
-		<Api Name="GetDRAMInfo2"/>
+		<Api Name="GetDRAMInfo">
+			<Param Type="int" Name="slot" />
+			<Param Type="PWCHAR" Name="manufac" />
+			<Param Type="PWCHAR" Name="partnum" />
+			<Return Type="BOOL" />
+		</Api>
+		<Api Name="GetDRAMInfo2">
+			<Param Type="int" Name="slot" />
+			<Param Type="PWCHAR" Name="manufac" />
+			<Param Type="PWCHAR" Name="size" />
+			<Param Type="PWCHAR" Name="width" />
+			<Return Type="BOOL" />
+		</Api>
 		<Api Name="GetECSpace"/>
 		<Api Name="GetSIO_DefaultWhite"/>
 		<Api Name="GetSMBBASE"/>
