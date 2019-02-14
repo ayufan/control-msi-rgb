@@ -1,0 +1,161 @@
+#!/bin/bash
+
+ALPHA=255
+
+source $(dirname $(readlink -f "$0"))/functions/common-functions
+source $(dirname $(readlink -f "$0"))/functions/corsair-functions
+
+STYLE=0
+BRIGHT=100
+DIRECTION=0
+SPEED=0
+COLOR_TYPE=0
+COLOR_A="white"
+COLOR_B="black"
+
+usage() {
+  cat <<EOF
+usage: $0 <dimm0-3> [bright=0-99] [speed] [animation] [mode] [color]
+
+general:
+  dimm0-3: select dimm (required)
+  bright=0-99: select brightness
+
+speed:
+  speed=slow, speed=medium, speed=fast
+
+animation direction:
+  dir=up (default), dir=down
+
+mode:
+  rainbow, spiral-rainbow, wave
+  visor, rain, rain-2,
+  breathing, shift, marquee,
+  pulse
+
+color:
+  color=<name-of-color>: main color (default random)
+  colorb=<name-of-color>: alternative color
+
+examples:
+  \$ $0 dimm1 bright=70 speed=medium rainbow
+  \$ $0 dimm1 bright=70 speed=medium rain color=white colorb=red
+EOF
+}
+
+for arg; do
+  case "$arg" in
+    dimm*)
+      set_dimm "$1"
+      ;;
+
+    bright=[0-9]*)
+      BRIGHT=${arg/bright=/} 
+      ;;
+    
+    dir=up)
+      DIRECTION=0
+      ;;
+
+    dir=down)
+      DIRECTION=1
+      ;;
+
+    speed=slow)
+      SPEED=0
+      ;;
+
+    speed=medium)
+      SPEED=1
+      ;;
+
+    speed=fast)
+      SPEED=2
+      ;;
+
+    color=*)
+      COLOR_TYPE=1
+      COLOR_A="${arg/color=/}"
+      ;;
+
+    colorb=*)
+      COLOR_TYPE=1
+      COLOR_B="${arg/colorb=/}"
+      ;;
+
+    wave)
+      STYLE=0
+      ;;
+
+    rainbow)
+      STYLE=3
+      ;;
+
+    spiral-rainbow)
+      STYLE=2
+      ;;
+
+    visor)
+      STYLE=5
+      ;;
+
+    rain)
+      STYLE=6
+      ;;
+
+    rain-2)
+      STYLE=4
+      ;;
+
+    breathing)
+      STYLE=1
+      ;;
+
+    shift)
+      STYLE=8
+      ;;
+
+    marquee)
+      STYLE=7
+      ;;
+
+    pulse)
+      STYLE=9
+      ;;
+
+    help)
+      usage
+      exit 1
+      ;;
+
+    *)
+      echo "unknown argument: $1"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+# - 0?
+# - rainbow: 3, random
+# - spiral rainbow: 2, random
+# - visor: 5, random or alternating rgba1/2
+# - rain: 6, random or alternating rgba1/2
+# - rain alternating: 4, random or alternating rgba1/2
+# - breathing: 1, random
+# - color shift: 8, random
+# - marquee: 7, random, single color
+# - color pulse: 10, single color
+# - user: 16
+#
+# color type:
+# - random: 0
+# - alternating: 1
+#
+# speed:
+# - 0 - low
+# - 1 - medium
+# - 2 - high
+
+write_bright $BRIGHT
+write_config $STYLE $SPEED $COLOR_TYPE $DIRECTION $(get_colors $COLOR_A $COLOR_B)

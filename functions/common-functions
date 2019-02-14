@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -eo pipefail
+shopt -s nullglob
+
+[[ -n "$TRACE" ]] && set -x
+
+COLOR_WHITE="255 255 255 $ALPHA"
+COLOR_RED="255 0 0 $ALPHA"
+COLOR_GREEN="0 255 0 $ALPHA"
+COLOR_BLUE="0 0 255 $ALPHA"
+COLOR_GRAY="128 128 128 $ALPHA"
+COLOR_BLACK="0 0 0 $ALPHA"
+
+fail() {
+  echo "$@" 1>&2
+  return 1
+}
+
+get_color() {
+  case "$1" in
+    white)
+      echo "$COLOR_WHITE"
+      ;;
+
+    red)
+      echo "$COLOR_RED"
+      ;;
+
+    green)
+      echo "$COLOR_GREEN"
+      ;;
+
+    blue)
+      echo "$COLOR_BLUE"
+      ;;
+
+    gray)
+      echo "$COLOR_GRAY"
+      ;;
+
+    black)
+      echo "$COLOR_BLACK"
+      ;;
+
+    *)
+      fail "uknown color: $1"
+      ;;
+  esac
+}
+
+get_colors() {
+  for color; do
+    get_color "$color"
+  done
+}
+
+I2C=
+for dev in /sys/devices/pci0000:00/0000:00:1f.4/i2c-*; do
+  I2C=$(basename $dev i2c-)
+  I2C=${I2C/i2c-/}
+done
+
+if [[ -z "$I2C" ]]; then
+  echo "Cannot find I2C"
+  exit 1
+fi

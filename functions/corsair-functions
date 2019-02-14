@@ -1,0 +1,111 @@
+#!/bin/bash
+
+# 0x58: dimm0
+# 0x59: dimm1
+# 0x5a: dimm2
+# 0x5b: dimm3
+DIMM=""
+
+set_dimm() {
+  case "$1" in
+    dimm0)
+      DIMM="0x58"
+      ;;
+
+    dimm1)
+      DIMM="0x59"
+      ;;
+
+    dimm2)
+      DIMM="0x5a"
+      ;;
+
+    dimm3)
+      DIMM="0x5b"
+      ;;
+
+    *)
+      fail "unknown dimm $1: accepted dimm0-3"
+      ;;
+  esac
+}
+
+require_dimm() {
+  if [[ -z "$DIMM" ]]; then
+    fail "$0: missing dimm0-3"
+    exit 1
+  fi
+}
+
+write() {
+  require_dimm
+  i2cset -y "$I2C" "$DIMM" "$@"
+}
+
+dump() {
+  require_dimm
+  i2cdump -y "$I2C" "$DIMM"
+}
+
+write_multi() {
+  ADDR="$1"
+  shift
+  for param; do
+    write "$ADDR" "$param"
+  done 
+}
+
+write_bright() {
+  write 16 "$@"
+}
+
+write_leds() {
+  if [[ $# -ne 10 ]]; then
+    echo "write_leds requires exactly 10 leds: $#"
+    return 1
+  fi
+
+  COLORS=$(get_colors "$@")
+
+  write 33 0
+  write_multi 32 $COLORS
+}
+
+# style:
+# - 0?
+# - rainbow: 3, random
+# - spiral rainbow: 2, random
+# - visor: 5, random or alternating rgba1/2
+# - rain: 6, random or alternating rgba1/2
+# - rain alternating: 4, random or alternating rgba1/2
+# - breathing: 1, random
+# - color shift: 8, random
+# - marquee: 7, random, single color
+# - color pulse: 10, single color
+# - user: 16
+#
+# color type:
+# - random: 0
+# - alternating: 1
+#
+# speed:
+# - 0 - low
+# - 1 - medium
+# - 2 - high
+
+# rainbow
+# write_config 3 1 0 0 "$COLOR_BLACK" "$COLOR_BLACK"
+write_config() {
+  if [[ $# -lt 4 ]]; then
+    echo "usage: $0 <style> <speed> <color-type> <direction> [rgba1] [rgba2]"
+    return 1
+  fi
+
+  write 130 2
+  sleep 0.2s
+  write 33 0
+  write_multi 32 $@
+  write 130 1
+  sleep 0.2s
+  write 192 0
+}

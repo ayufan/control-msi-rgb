@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [[ $# -ne 5 ]]; then
+  echo "usage: $0 <dimm> <brightness> <color-a> <color-b> <progress%>"
+  exit 1
+fi
+
+progress() {
+  for i in $(seq 10 10 $3); do
+    echo "$1"
+  done
+  for i in $(seq $3 10 99); do
+    echo "$2"
+  done
+}
+
+$(dirname $(readlink -f "$0"))/corsair-pro-set-leds "$1" "$2" $(progress "$3" "$4" "$5")

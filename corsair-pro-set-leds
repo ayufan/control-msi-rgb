@@ -1,0 +1,18 @@
+#!/bin/bash
+
+ALPHA=255
+
+source $(dirname $(readlink -f "$0"))/functions/common-functions
+source $(dirname $(readlink -f "$0"))/functions/corsair-functions
+
+if [[ $# -ne 12 ]]; then
+  echo "usage: $0 <dimm> <brightness> <10 colors>"
+  exit 1
+fi
+
+set_dimm "$1"
+write_bright "$2"
+shift 2
+
+write_leds "$@"
+write_config 16 0 0 0
