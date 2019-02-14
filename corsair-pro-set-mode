@@ -28,7 +28,7 @@ animation direction:
   dir=up (default), dir=down
 
 mode:
-  rainbow, spiral-rainbow, wave
+  off, rainbow, spiral-rainbow, wave
   visor, rain, rain-2,
   breathing, shift, marquee,
   pulse
@@ -123,13 +123,21 @@ for arg; do
       STYLE=9
       ;;
 
+    off)
+      BRIGHT=0
+      STYLE=7
+      COLORTYPE=1
+      COLORA=black
+      COLORB=black
+      ;;
+
     help)
       usage
       exit 1
       ;;
 
     *)
-      echo "unknown argument: $1"
+      echo "unknown argument: $arg"
       usage
       exit 1
       ;;

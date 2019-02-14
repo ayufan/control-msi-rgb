@@ -1,93 +1,153 @@
 #!/bin/bash
 
-set -e
+source $(dirname $(readlink -f "$0"))/functions/common-functions
+source $(dirname $(readlink -f "$0"))/functions/msi-functions
 
-I2C=
-for dev in /sys/devices/pci0000:00/0000:00:1f.4/i2c-*; do
-  I2C=$(basename $dev i2c-)
-  I2C=${I2C/i2c-/}
+STYLE=0x9f
+DATA=0
+E0=2
+ONTIME=5
+OFFTIME=20
+DARKTIME=20
+COLOR="red"
+MASK=0
+
+usage() {
+  cat <<EOF
+usage: $0 [options]
+
+mask:
+  all, jrgb1, bot, audio1, audio2, audio3, audio4, pch
+
+mode:
+  breathing, flashing, marque, meteor,
+  mystic, rainbow, lighting, dual-blink,
+  off
+
+color:
+  color=<name-of-color>: main color (default red, sometimes random)
+
+extra:
+  range=?
+  ontime=5,10,15,20 (breathing, flashing, dual-blink)
+  offtime=5,10,15,20 (flashing, dual-blink)
+  darktime=5,10,15,20 (dual-blink)
+
+examples:
+  \$ $0 all rainbow
+  \$ $0 static pch color=white
+EOF
+}
+
+for arg; do
+  case "$arg" in
+    all)
+      MASK=255
+      ;;
+
+    jrgb1)
+      MASK=$((MASK+1))
+      ;;
+
+    bot)
+      MASK=$((MASK+2))
+      ;;
+
+    audio1)
+      MASK=$((MASK+4))
+      ;;
+
+    audio2)
+      MASK=$((MASK+8))
+      ;;
+
+    audio3)
+      MASK=$((MASK+16))
+      ;;
+
+    audio4)
+      MASK=$((MASK+32))
+      ;;
+
+    pch)
+      MASK=$((MASK+64))
+      ;;
+
+    breathing)
+      STYLE=0x90
+      ;;
+
+    flashing)
+      STYLE=0x91
+      ;;
+
+    marque)
+      STYLE=0x92
+      ;;
+
+    meteor)
+      STYLE=0x93
+      ;;
+
+    nmystick)
+      STYLE=0x94
+      ;;
+
+    rainbow)
+      STYLE=0x95
+      ;;
+
+    lighting)
+      STYLE=0x96
+      ;;
+
+    dual-blink)
+      STYLE=0x99
+      DATA=1
+      ;;
+
+    static)
+      STYLE=0x9f
+      DATA=1
+      ;;
+
+    color=*)
+      COLOR=${arg/color=/}
+      ;;
+
+    range=[0-9]*)
+      DATA=${arg/range=/}
+      ;;
+
+    ontime=[0-9]*)
+      ONTIME=${arg/ontime=/}
+      ;;
+
+    darktime=[0-9]*)
+      DARKTIME=${arg/darktime=/}
+      ;;
+
+    off)
+      STYLE=0x9f
+      DATA=0
+      ;;
+
+    help)
+      usage
+      exit 1
+      ;;
+
+    *)
+      echo "unknown argument: $arg"
+      usage
+      exit 1
+      ;;
+  esac
 done
 
-if [[ -z "$I2C" ]]; then
-  echo "Cannot find I2C"
-  exit 1
-fi
-
-DEV="41"
-
-write() {
-  i2cset -y "$I2C" "$DEV" "$@"
-}
-
-dump() {
-  i2cdump -y "$I2C" "$DEV"
-}
-
-# TODO: what is that for?
-write_mono_mask() {
-  echo "write_mono_mask index=$1,$2"
-
-  write 0x70 "$1"
-  write 0x71 "$2"
-}
-
-# index80:
-# - JRGB1: 1
-# - MB BOT: 2
-# - MB AUDIO1: 4
-# - MB AUDIO2: 8
-# - MB AUDIO3: 16
-# - MB AUDIO4: 32
-# - PCH1: 64 (the Mystic Light!)
-write_mask() {
-  echo "write_mask index=$1,$2,$3,$4"
-
-  write 0x80 "$1"
-  write 0x81 "$2"
-  write 0x82 "$3"
-  write 0x83 "$4"
-}
-
-write_rgb() {
-  echo "write_rgb rgb=$1,$2,$3"
-
-  write 136 "$1"
-  write 137 "$2"
-  write 138 "$3"
-}
-
-# cmd:
-# - 0x78: mono control
-# - 0x87: set brightness
-# - 0x90: breathing, data: range, e1: onTime
-# - 0x91: flashing mode, data: range, e1: onTime, e2: offTime
-# - 0x92: marque
-# - 0x93: meteor
-# - 0x94: mystick stack, e1: 3
-# - 0x95: rainbow, e1: 3
-# - 0x96: lighting mode, data: range
-# - 0x99: dual blink, data: range, e0: 2, e1: onTime, e2: offTime, e3: 0, e5: darkTime
-# - 0x9e: music led, data: mode * 4 (12 POP, 20 RAP, 4 JAZZ, 8 GAMES, 16 MOVE), 238: left volume, 239: right volume
-# - 0x9f: data: 0: off, 1: constant color
-write_cmd() {
-  echo "write_cmd $1=$2 params=$3,$4,$5,$6,$7"
-
-  write 224 "${3-0}"
-  write 225 "${4-0}"
-  write 226 "${5-0}"
-  write 227 "${6-0}"
-  write 229 "${7-0}"
-  write "$1" "${2-0}"
-  write "$1" "${2-0}"
-  write "$1" "${2-0}"
-}
+COLOR=$(get_color $COLOR)
 
 write_mono_mask 0 0
-write_mask 0xff 0xff 0xff 0
-write_rgb 0 0xff 0
-
-# enable constant color: breathing without range
-write_cmd 0x9f 1
-
-# enable rainbow
-#write_cmd 0x95
+write_mask $MASK 0 0 0
+write_rgb $COLOR
+write_cmd $STYLE $DATA $E0 $ONTIME $OFFTIME 0 $DARKTIME

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+MSI_DEV="41"
+
+write() {
+  i2cset -y "$I2C" "$MSI_DEV" "$@"
+}
+
+dump() {
+  i2cdump -y "$I2C" "$MSI_DEV"
+}
+
+# TODO: what is that for?
+write_mono_mask() {
+  echo "write_mono_mask index=$1,$2"
+
+  write 0x70 "$1"
+  write 0x71 "$2"
+}
+
+# index80:
+# - JRGB1: 1
+# - MB BOT: 2
+# - MB AUDIO1: 4
+# - MB AUDIO2: 8
+# - MB AUDIO3: 16
+# - MB AUDIO4: 32
+# - PCH1: 64 (the Mystic Light!)
+write_mask() {
+  echo "write_mask index=$1,$2,$3,$4"
+
+  write 0x80 "$1"
+  write 0x81 "$2"
+  write 0x82 "$3"
+  write 0x83 "$4"
+}
+
+write_rgb() {
+  echo "write_rgb rgb=$1,$2,$3"
+
+  write 136 "$1"
+  write 137 "$2"
+  write 138 "$3"
+}
+
+# cmd:
+# - 0x78: mono control
+# - 0x87: set brightness
+# - 0x90: breathing, data: range, e1: onTime
+# - 0x91: flashing mode, data: range, e1: onTime, e2: offTime
+# - 0x92: marque
+# - 0x93: meteor
+# - 0x94: mystick stack, e1: 3
+# - 0x95: rainbow, e1: 3
+# - 0x96: lighting mode, data: range
+# - 0x99: dual blink, data: range, e0: 2, e1: onTime, e2: offTime, e3: 0, e5: darkTime
+# - 0x9e: music led, data: mode * 4 (12 POP, 20 RAP, 4 JAZZ, 8 GAMES, 16 MOVE), 238: left volume, 239: right volume
+# - 0x9f: data: 0: off, 1: constant color
+write_cmd() {
+  echo "write_cmd $1=$2 params=$3,$4,$5,$6,$7"
+
+  write 224 "${3-0}"
+  write 225 "${4-0}"
+  write 226 "${5-0}"
+  write 227 "${6-0}"
+  write 229 "${7-0}"
+  write "$1" "${2-0}"
+  write "$1" "${2-0}"
+  write "$1" "${2-0}"
+}
