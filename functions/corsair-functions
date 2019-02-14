@@ -25,15 +25,14 @@ set_dimm() {
       ;;
 
     *)
-      fail "unknown dimm $1: accepted dimm0-3"
+      fatal "unknown dimm $1: accepted dimm0-3"
       ;;
   esac
 }
 
 require_dimm() {
   if [[ -z "$DIMM" ]]; then
-    fail "$0: missing dimm0-3"
-    exit 1
+    fatal "$0: missing dimm0-3"
   fi
 }
 

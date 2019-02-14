@@ -30,6 +30,11 @@ fail() {
   return 1
 }
 
+fatal() {
+  echo "$@" 1>&2
+  exit 1
+}
+
 get_available_colors() {
   while read key; do
     key=${key/COLOR_/}
@@ -42,8 +47,7 @@ get_color() {
   color=${!key}
 
   if [[ -z "$color" ]]; then
-    fail "uknown color: $1 (supported color names: $(echo -n $(get_available_colors)))"
-    return 1
+    fatal "uknown color: $1 (supported color names: $(echo -n $(get_available_colors)))"
   fi
 
   echo "$color"
