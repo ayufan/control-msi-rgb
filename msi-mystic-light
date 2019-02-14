@@ -2,75 +2,92 @@
 
 set -e
 
-I2C="0"
+I2C=
+for dev in /sys/devices/pci0000:00/0000:00:1f.4/i2c-*; do
+  I2C=$(basename $dev i2c-)
+  I2C=${I2C/i2c-/}
+done
+
+if [[ -z "$I2C" ]]; then
+  echo "Cannot find I2C"
+  exit 1
+fi
+
 DEV="41"
 
 write() {
   i2cset -y "$I2C" "$DEV" "$@"
 }
 
-RenesasLEDControlV3() {
-  index70="$1"
-  index71="$2"
-  index80="$3"
-  index81="$4"
-  index82="$5"
-  index83="$6"
-  cmd="$7"
-  data="$8"
-  r="$9"
-  g="${10}"
-  b="${11}"
-  e0="${12}"
-  e1="${13}"
-  e2="${14}"
-  e3="${15}"
-  e5="${16}"
-
-  echo "index=$1,$2,$3,$4,$5,$6 cmd=$cmd,$data, rgb=$r,$g,$b e=$e0,$e1,$e2,$e3,$e5"
-
-  write 0x70 "$index70"
-  write 0x71 "$index71"
-  write 0x80 "$index80"
-  write 0x81 "$index81"
-  write 0x82 "$index82"
-  write 0x83 "$index83"
-  write 136 "$r"
-  write 137 "$g"
-  write 138 "$b"
-  write "$cmd" "$data"
-  write 224 "$e0"
-  write 225 "$e1"
-  write 226 "$e2"
-  write 227 "$e3"
-  write 228 "$e5"
+dump() {
+  i2cdump -y "$I2C" "$DEV"
 }
 
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0
+# TODO: what is that for?
+write_mono_mask() {
+  echo "write_mono_mask index=$1,$2"
 
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0 
+  write 0x70 "$1"
+  write 0x71 "$2"
+}
 
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0
+# index80:
+# - JRGB1: 1
+# - MB BOT: 2
+# - MB AUDIO1: 4
+# - MB AUDIO2: 8
+# - MB AUDIO3: 16
+# - MB AUDIO4: 32
+# - PCH1: 64 (the Mystic Light!)
+write_mask() {
+  echo "write_mask index=$1,$2,$3,$4"
 
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
-RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0
+  write 0x80 "$1"
+  write 0x81 "$2"
+  write 0x82 "$3"
+  write 0x83 "$4"
+}
 
-# 0x78: all control?
-# 0x87: set brightness
-# 0x8a: set RGB, range
-# 0x90: breathing, data: range, e1: onTime
-# 0x91: flashing mode, data: range, e1: onTime, e2: offTime
-# 0x92: marque
-# 0x93: meteor
-# 0x94: mystick stack, e1: 3
-# 0x95: rainbow, e1: 3
-# 0x96: lighting mode, data: range
-# 0x99: dual blink, data: range, e0: 2, e1: onTime, e2: offTime, e3: 0, e5: darkTime
-# 0x9e: music led, data: mode * 4
-# 0x9f: some mode?
-RenesasLEDControlV3 0 0  0xff 0xff 0xff 0   0x8a 0    0xff 0xff 0xff
-# RenesasLEDControlV3 0 0 0xff 0xff 0xff 0 0x90 2 0 0 0 0 13 0 0 0
-RenesasLEDControlV3 0 0  0xff 0xff 0xff 0   0x90 2    0 0 0             0 3 0 0 0
+write_rgb() {
+  echo "write_rgb rgb=$1,$2,$3"
+
+  write 136 "$1"
+  write 137 "$2"
+  write 138 "$3"
+}
+
+# cmd:
+# - 0x78: mono control
+# - 0x87: set brightness
+# - 0x90: breathing, data: range, e1: onTime
+# - 0x91: flashing mode, data: range, e1: onTime, e2: offTime
+# - 0x92: marque
+# - 0x93: meteor
+# - 0x94: mystick stack, e1: 3
+# - 0x95: rainbow, e1: 3
+# - 0x96: lighting mode, data: range
+# - 0x99: dual blink, data: range, e0: 2, e1: onTime, e2: offTime, e3: 0, e5: darkTime
+# - 0x9e: music led, data: mode * 4 (12 POP, 20 RAP, 4 JAZZ, 8 GAMES, 16 MOVE), 238: left volume, 239: right volume
+# - 0x9f: data: 0: off, 1: constant color
+write_cmd() {
+  echo "write_cmd $1=$2 params=$3,$4,$5,$6,$7"
+
+  write 224 "${3-0}"
+  write 225 "${4-0}"
+  write 226 "${5-0}"
+  write 227 "${6-0}"
+  write 229 "${7-0}"
+  write "$1" "${2-0}"
+  write "$1" "${2-0}"
+  write "$1" "${2-0}"
+}
+
+write_mono_mask 0 0
+write_mask 0xff 0xff 0xff 0
+write_rgb 0 0xff 0
+
+# enable constant color: breathing without range
+write_cmd 0x9f 1
+
+# enable rainbow
+#write_cmd 0x95
