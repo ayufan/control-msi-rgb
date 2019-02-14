@@ -1,0 +1,76 @@
+#!/bin/bash
+
+set -e
+
+I2C="0"
+DEV="41"
+
+write() {
+  i2cset -y "$I2C" "$DEV" "$@"
+}
+
+RenesasLEDControlV3() {
+  index70="$1"
+  index71="$2"
+  index80="$3"
+  index81="$4"
+  index82="$5"
+  index83="$6"
+  cmd="$7"
+  data="$8"
+  r="$9"
+  g="${10}"
+  b="${11}"
+  e0="${12}"
+  e1="${13}"
+  e2="${14}"
+  e3="${15}"
+  e5="${16}"
+
+  echo "index=$1,$2,$3,$4,$5,$6 cmd=$cmd,$data, rgb=$r,$g,$b e=$e0,$e1,$e2,$e3,$e5"
+
+  write 0x70 "$index70"
+  write 0x71 "$index71"
+  write 0x80 "$index80"
+  write 0x81 "$index81"
+  write 0x82 "$index82"
+  write 0x83 "$index83"
+  write 136 "$r"
+  write 137 "$g"
+  write 138 "$b"
+  write "$cmd" "$data"
+  write 224 "$e0"
+  write 225 "$e1"
+  write 226 "$e2"
+  write 227 "$e3"
+  write 228 "$e5"
+}
+
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0
+
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0 
+
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0
+
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 2 0 0 0 0 0 0 0 0
+RenesasLEDControlV3 0 0 0xff 0xff 0xff 0xff 0x9f 0 0 0 0 0 0 0 0 0
+
+# 0x78: all control?
+# 0x87: set brightness
+# 0x8a: set RGB, range
+# 0x90: breathing, data: range, e1: onTime
+# 0x91: flashing mode, data: range, e1: onTime, e2: offTime
+# 0x92: marque
+# 0x93: meteor
+# 0x94: mystick stack, e1: 3
+# 0x95: rainbow, e1: 3
+# 0x96: lighting mode, data: range
+# 0x99: dual blink, data: range, e0: 2, e1: onTime, e2: offTime, e3: 0, e5: darkTime
+# 0x9e: music led, data: mode * 4
+# 0x9f: some mode?
+RenesasLEDControlV3 0 0  0xff 0xff 0xff 0   0x8a 0    0xff 0xff 0xff
+# RenesasLEDControlV3 0 0 0xff 0xff 0xff 0 0x90 2 0 0 0 0 13 0 0 0
+RenesasLEDControlV3 0 0  0xff 0xff 0xff 0   0x90 2    0 0 0             0 3 0 0 0

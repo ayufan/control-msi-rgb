@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -xe
+
+I2C="0"
+DIMM="0x59"
+STYLE="16"
+SPEED="2"
+COLORTYPE="0"
+DIRECTION="0"
+
+BRIGHT="100"
+
+write_to_dimm() {
+  i2cset -y "$I2C" "$DIMM" "$@"
+}
+
+write_multi_to_dimm() {
+  ADDR="$1"
+  shift
+  for param; do
+    write_to_dimm "$ADDR" "$param"
+  done 
+}
+
+write_to_dimm 16 $BRIGHT
+
+# write 10 addressable LEDs
+sleep 0.1s
+write_to_dimm 33 0
+
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+write_multi_to_dimm 32 0 0 0 255
+
+# configure the style
+write_to_dimm 130 2
+sleep 1s
+write_to_dimm 33 0
+
+write_multi_to_dimm 32 "$STYLE" "$SPEED" "$COLORTYPE" "$DIRECTION"
+
+# write 4 configured leds
+write_multi_to_dimm 32 255 255 255 255
+write_multi_to_dimm 32 255 255 255 255
+write_multi_to_dimm 32 0 0 0 0
+
+write_to_dimm 130 1
+sleep 1s
+write_to_dimm 192 0
