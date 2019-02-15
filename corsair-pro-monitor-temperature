@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [[ $# -lt 5 ]]; then
+  echo "usage: $0 <dimm> <brightness> <temperature-path> [<step>=<color> ...]"
+  echo "  at least two steps are needed..."
+  echo " example:"
+  echo "  $0 dimm0 100 /sys/class/hwmon/hwmon2/temp1_input 30000=green 45000=green2 55000=orange 60000=red 70000=purple"
+  exit 1
+fi
+
+DIMM="$1"
+BRIGHT="$2"
+TEMPERATURE="$3"
+MODE="wave"
+SPEED="medium"
+shift 3
+
+get_colors() {
+  local LAST_COLOR=""
+  local CUR_COLOR=""
+  local VALUE="$1"
+  shift
+
+  for step_color; do
+    LAST_COLOR=$CUR_COLOR
+    STEP=${step_color/=*/}
+    CUR_COLOR=${step_color/*=/}
+
+    if [[ $VALUE -lt $STEP ]]; then
+      break
+    fi
+  done
+
+  [[ -z "$LAST_COLOR" ]] && LAST_COLOR=$CUR_COLOR
+
+  echo "color=$CUR_COLOR colorb=$LAST_COLOR"
+}
+
+LAST_COLORS=""
+
+while sleep 3s; do
+  VALUE=$(cat "$TEMPERATURE")
+  COLORS=$(get_colors "$VALUE" "$@")
+  echo "$VALUE == $COLORS (last: $LAST_COLORS)"
+  if [[ "$COLORS" != "$LAST_COLORS" ]]; then
+    if $(dirname $(readlink -f "$0"))/corsair-pro-set-mode "$DIMM" "bright=$BRIGHT" "$MODE" "speed=$SPEED" $COLORS; then
+      LAST_COLORS=$COLORS
+    fi
+  fi
+done
