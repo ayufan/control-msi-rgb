@@ -120,7 +120,7 @@ for arg; do
       ;;
 
     pulse)
-      STYLE=9
+      STYLE=10
       ;;
 
     off)
