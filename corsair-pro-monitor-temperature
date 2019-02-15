@@ -27,13 +27,16 @@ get_colors() {
     CUR_COLOR=${step_color/*=/}
 
     if [[ $VALUE -lt $STEP ]]; then
-      break
+      if [[ -z "$LAST_COLOR" ]]; then
+        LAST_COLOR=$CUR_COLOR
+      fi
+
+      echo "color=$CUR_COLOR colorb=$LAST_COLOR"
+      return
     fi
   done
 
-  [[ -z "$LAST_COLOR" ]] && LAST_COLOR=$CUR_COLOR
-
-  echo "color=$CUR_COLOR colorb=$LAST_COLOR"
+  echo "color=$CUR_COLOR colorb=$CUR_COLOR"
 }
 
 LAST_COLORS=""
