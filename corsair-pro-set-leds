@@ -11,8 +11,8 @@ if [[ $# -ne 12 ]]; then
 fi
 
 set_dimm "$1"
-write_bright "$2"
+retry write_bright "$2"
 shift 2
 
-write_leds "$@"
-write_config 16 0 0 0
+retry write_leds "$@"
+retry write_config 16 0 0 0

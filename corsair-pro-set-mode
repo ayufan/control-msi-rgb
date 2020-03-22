@@ -50,9 +50,9 @@ for arg; do
       ;;
 
     bright=[0-9]*)
-      BRIGHT=${arg/bright=/} 
+      BRIGHT=${arg/bright=/}
       ;;
-    
+
     dir=up)
       DIRECTION=0
       ;;
@@ -170,10 +170,10 @@ done
 # - 1 - medium
 # - 2 - high
 
-write_bright $BRIGHT
+retry write_bright $BRIGHT
 
 if [[ $STYLE -eq 16 ]]; then
-  write_leds "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA"
+  retry write_leds "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA" "$COLORA"
 fi
 
-write_config $STYLE $SPEED $COLORTYPE $DIRECTION $(get_colors "$COLORA" "$COLORB")
+retry write_config $STYLE $SPEED $COLORTYPE $DIRECTION $(get_colors "$COLORA" "$COLORB")
