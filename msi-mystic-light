@@ -22,7 +22,7 @@ mask:
 mode:
   breathing, flashing, marque, meteor,
   mystic, rainbow, lighting, dual-blink,
-  off
+  static, off
 
 color:
   color=<name-of-color>: main color (default red, sometimes random)
@@ -89,7 +89,7 @@ for arg; do
       STYLE=0x93
       ;;
 
-    mystick)
+    mystic)
       STYLE=0x94
       ;;
 
@@ -103,6 +103,11 @@ for arg; do
 
     dual-blink)
       STYLE=0x99
+      DATA=1
+      ;;
+
+    music)
+      STYLE=0x9e
       DATA=1
       ;;
 
@@ -151,6 +156,12 @@ done
 
 COLOR=$(get_color $COLOR)
 
+# disable to reset controller
+write_mask $MASK 0 0 0
+write_cmd 0x9f 0 2 5 20 0 20
+sleep 0.1
+
+# enable
 write_mono_mask 0 0
 write_mask $MASK 0 0 0
 write_rgb $COLOR

@@ -38,9 +38,9 @@ write_mask() {
 write_rgb() {
   echo "write_rgb rgb=$1,$2,$3"
 
-  write 136 "$1"
-  write 137 "$2"
-  write 138 "$3"
+  write 0x88 "$1"
+  write 0x89 "$2"
+  write 0x8a "$3"
 }
 
 # cmd:
@@ -59,11 +59,12 @@ write_rgb() {
 write_cmd() {
   echo "write_cmd $1=$2 params=$3,$4,$5,$6,$7"
 
-  write 224 "${3-0}"
-  write 225 "${4-0}"
-  write 226 "${5-0}"
-  write 227 "${6-0}"
-  write 229 "${7-0}"
+  write 0xe0 "${3-0}"
+  write 0xe1 "${4-0}"
+  write 0xe2 "${5-0}"
+  write 0xe3 "${6-0}"
+  write 0xe5 "${7-0}"
+  write "$1" "${2-0}"
   write "$1" "${2-0}"
   write "$1" "${2-0}"
   write "$1" "${2-0}"
