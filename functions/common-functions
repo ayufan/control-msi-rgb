@@ -70,9 +70,10 @@ get_colors() {
 }
 
 I2C=
-for dev in /sys/devices/pci0000:00/0000:00:1f.4/i2c-*; do
+for dev in /sys/devices/pci0000:00/0000:00:1f.4/i2c-* /sys/devices/pci0000:00/0000:00:14.0/i2c-*; do
   I2C=$(basename $dev i2c-)
   I2C=${I2C/i2c-/}
+  break
 done
 
 if [[ -z "$I2C" ]]; then
